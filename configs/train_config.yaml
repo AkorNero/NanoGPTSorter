@@ -1,0 +1,14 @@
+data:
+  vocab_size: 13
+  block_size: 12
+  special_characters: 3
+model:
+  d_model: 48
+  n_head: 3
+  n_layers: 3
+training:
+  batch_size: 32
+  learning_rate: 1e-3
+  max_iters: 10
+  eval_interval: 10
+  device: cuda
