@@ -6,21 +6,23 @@ from pydantic import BaseModel, Field  # noqa: F401
 
 class DataConfig(BaseModel):
     vocab_size: Annotated[int, Field(gt=0)]
-    block_size: Annotated[int, Field(gt=0)]
     special_characters: int
+    min_seq: Annotated[int, Field(gt=0)]
+    max_seq: Annotated[int, Field(gt=0)]
 
 
 class ModelConfig(BaseModel):
+    block_size: Annotated[int, Field(gt=0)]
     d_model: Annotated[int, Field(gt=0)]
-    n_head: Annotated[int, Field(gt=0)]
+    n_heads: Annotated[int, Field(gt=0)]
     n_layers: Annotated[int, Field(gt=0)]
 
 
 class TrainingConfig(BaseModel):
     batch_size: Annotated[int, Field(gt=0)]
     learning_rate: Annotated[float, Field(gt=0)]
-    max_iters: Annotated[int, Field(ge=5)]
-    eval_interval: Annotated[int, Field(ge=10)]
+    epoch: Annotated[int, Field(ge=5)]
+    agg_interval: Annotated[int, Field(ge=1, alias="agg_loss_interval")]
     device: Literal["cuda", "cpu"] = "cuda"
 
 

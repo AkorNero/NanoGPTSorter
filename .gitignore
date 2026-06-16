@@ -224,3 +224,9 @@ AGENT.md
 CODE_CHANGE_SUGGESTION.md
 TODO.md
 
+# MLflow local tracking files and folders
+mlflow.db
+mlartifacts/
+mlruns/
+
+

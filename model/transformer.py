@@ -44,7 +44,7 @@ class NanoGPTSorter(torch.nn.Module):
         self.lm_head.weight = self.token_embedding.weight
 
     def forward(self, idx, target=None):
-        B = idx.size(0)
+        # B = idx.size(0)
         T = idx.size(1)
         token_embedding = self.token_embedding(idx)  # (B,T,d_model)
 
@@ -60,9 +60,11 @@ class NanoGPTSorter(torch.nn.Module):
 
         logits = self.lm_head(x)  # (B, T, vocab_size)
 
+        softmax_logits = torch.softmax(logits, dim=-1)  # (B, T, vocab_size)
+
         if target is not None:
-            logits_flat = logits.view(
-                -1, logits.size(-1)
+            logits_flat = softmax_logits.view(
+                -1, softmax_logits.size(-1)
             )  # (B*T, vocab_size) here -1 argument of view method specifies to consilidate that particular dimension on its own base on possibility here it B*T
             target_flat = target.view(-1)  # (B*T,)
 
@@ -70,5 +72,5 @@ class NanoGPTSorter(torch.nn.Module):
                 logits_flat, target_flat, ignore_index=-100
             )
 
-            return logits, loss
-        return logits, None
+            return softmax_logits, loss
+        return softmax_logits, None

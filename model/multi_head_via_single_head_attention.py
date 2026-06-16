@@ -1,7 +1,5 @@
 import torch
 
-# from . import config
-
 
 class SingleHeadCausalSelfAttention(torch.nn.Module):
     def __init__(self, block_size, d_model, a_model):
