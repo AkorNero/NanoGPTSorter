@@ -7,8 +7,8 @@ from pydantic import BaseModel, Field  # noqa: F401
 class DataConfig(BaseModel):
     vocab_size: Annotated[int, Field(gt=0)]
     special_characters: int
-    min_seq: Annotated[int, Field(gt=0)]
-    max_seq: Annotated[int, Field(gt=0)]
+    min_seq: Annotated[int, Field(gt=0, le=5)]
+    max_seq: Annotated[int, Field(gt=0, le=5)]
 
 
 class ModelConfig(BaseModel):
@@ -23,6 +23,10 @@ class TrainingConfig(BaseModel):
     learning_rate: Annotated[float, Field(gt=0)]
     epoch: Annotated[int, Field(ge=5)]
     agg_interval: Annotated[int, Field(ge=1, alias="agg_loss_interval")]
+    dataset_length: Annotated[int, Field(gt=5000)]
+    train_ratio: Annotated[float, Field(gt=0.0, le=1.0)]
+    val_ratio: Annotated[float, Field(gt=0.0, le=1.0)]
+    test_ratio: Annotated[float, Field(gt=0.0, le=1.0)]
     device: Literal["cuda", "cpu"] = "cuda"
 
 

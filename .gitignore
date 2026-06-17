@@ -220,7 +220,7 @@ __marimo__/
 # Antigravity CLI and project documentation artifacts
 .antigravity
 .antigravitycli
-AGENT.md
+GEMINI.md
 CODE_CHANGE_SUGGESTION.md
 TODO.md
 
