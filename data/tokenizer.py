@@ -1,7 +1,7 @@
 from . import itos, stoi
 
 
-def encode(input: list[str]) -> list[int]:
+def encode(input) -> list[int]:
     return [stoi[char] for char in input]
 
 

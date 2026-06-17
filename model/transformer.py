@@ -60,11 +60,9 @@ class NanoGPTSorter(torch.nn.Module):
 
         logits = self.lm_head(x)  # (B, T, vocab_size)
 
-        softmax_logits = torch.softmax(logits, dim=-1)  # (B, T, vocab_size)
-
         if target is not None:
-            logits_flat = softmax_logits.view(
-                -1, softmax_logits.size(-1)
+            logits_flat = logits.view(
+                -1, logits.size(-1)
             )  # (B*T, vocab_size) here -1 argument of view method specifies to consilidate that particular dimension on its own base on possibility here it B*T
             target_flat = target.view(-1)  # (B*T,)
 
@@ -72,5 +70,28 @@ class NanoGPTSorter(torch.nn.Module):
                 logits_flat, target_flat, ignore_index=-100
             )
 
-            return softmax_logits, loss
-        return softmax_logits, None
+            # token-level accuracy - The percentage of individual chatacter that the model predicted correctly
+            # sequence-level accuracy - The percentage of sequence that were sorted completely correct
+
+            preds = torch.argmax(
+                logits, dim=-1
+            )  # (B, T) predicted token for the entire sequence or context range
+            mask = target != -100  # mask to ignore the input and pad token
+
+            correct_tokens = (preds == target) & mask  # (B, T)
+            # here the bitwise & operator acts as an element wise and operator due to pytorch operator overloading
+
+            token_level_accuracy = (
+                correct_tokens.sum().item() / mask.sum().item()
+            )  # float
+            # .item() method extracts the raw value from a tensor containing a single element and converts it into a standard Python int or float.
+
+            is_completely_correct = (preds == target) | (target == -100)  # (B, T)
+            # preds should either match with the target (or) must target must be -100 for the element to be true. here also the bitwise | acts as an element wise or operator
+
+            sequence_level_accuracy = (
+                is_completely_correct.all(dim=-1).float().mean().item()
+            )  # (B,)
+
+            return logits, loss, token_level_accuracy, sequence_level_accuracy
+        return logits, None, None, None

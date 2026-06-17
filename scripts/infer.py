@@ -37,7 +37,7 @@ if (1 <= len(sequence) and len(sequence) <= 5) and all(
 
     with torch.no_grad():
         while True:
-            logits, _ = infer_trained_model(enc_seq_tensor)
+            logits, _, _, _ = infer_trained_model(enc_seq_tensor)
             next_token_logits = logits[
                 0, -1, :
             ]  # (vocab_size,) last token vocab prediction logits
